@@ -6,9 +6,21 @@ Object.defineProperty(exports, '__esModule', {
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var _lodash = require('lodash');
+var _lodashEvery = require('lodash.every');
 
-var _lodash2 = _interopRequireDefault(_lodash);
+var _lodashEvery2 = _interopRequireDefault(_lodashEvery);
+
+var _lodashIsplainobject = require('lodash.isplainobject');
+
+var _lodashIsplainobject2 = _interopRequireDefault(_lodashIsplainobject);
+
+var _lodashIsfunction = require('lodash.isfunction');
+
+var _lodashIsfunction2 = _interopRequireDefault(_lodashIsfunction);
+
+var _lodashForeach = require('lodash.foreach');
+
+var _lodashForeach2 = _interopRequireDefault(_lodashForeach);
 
 var _immutable = require('immutable');
 
@@ -25,7 +37,7 @@ var isActionMap = undefined,
  * @return {Boolean} If every object property value is a plain object.
  */
 isDomainMap = function (map) {
-    return _lodash2['default'].every(map, _lodash2['default'].isPlainObject);
+    return (0, _lodashEvery2['default'])(map, _lodashIsplainobject2['default']);
 };
 
 /**
@@ -33,13 +45,13 @@ isDomainMap = function (map) {
  * @return {Boolean} If every object property value is a function.
  */
 isActionMap = function (map) {
-    return _lodash2['default'].every(map, _lodash2['default'].isFunction);
+    return (0, _lodashEvery2['default'])(map, _lodashIsfunction2['default']);
 };
 
 /**
  * @param {Object} domain
  * @param {Object} action
- * @param {String} action.name
+ * @param {String} action.type
  * @param {Object} collection
  * @param {Object} tapper
  * @return {Object}
@@ -52,24 +64,23 @@ iterator = function (domain, action, collection, tapper) {
     }
 
     newDomain = domain;
-
     // console.log(`domain`, domain, `action`, action, `definition`, collection);
 
-    _lodash2['default'].forEach(collection, function (value, domainName) {
+    (0, _lodashForeach2['default'])(collection, function (value, domainName) {
         // console.log(`value`, value, `domain`, domainName, `isActionMap`, isActionMap(value), `isDomainMap`, isDomainMap(value));
 
         if (isActionMap(value)) {
-            // console.log(`action.name`, action.name, `value[action.name]`, typeof value[action.name]);
+            // console.log(`action.type`, action.type, `value[action.type]`, typeof value[action.type]);
 
-            if (value[action.name]) {
+            if (value[action.type]) {
                 var result = undefined;
 
                 tapper.isActionHandled = true;
 
-                result = value[action.name](newDomain.get(domainName), action);
+                result = value[action.type](newDomain.get(domainName), action);
 
                 if (!_immutable2['default'].Iterable.isIterable(result)) {
-                    throw new Error('Reducer must return an instance of Immutable.Iterable. "' + domainName + '" domain "' + action.name + '" action handler result is "' + typeof result + '".');
+                    throw new Error('Reducer must return an instance of Immutable.Iterable. "' + domainName + '" domain "' + action.type + '" action handler result is "' + typeof result + '".');
                 }
 
                 newDomain = newDomain.set(domainName, result);
@@ -119,8 +130,8 @@ exports['default'] = function (reducer) {
 
         newState = iterator(state, action, reducer, tapper);
 
-        if (!tapper.isActionHandled && action.name !== 'CONSTRUCT') {
-            console.warn('Unhandled action "' + action.name + '".', action);
+        if (!tapper.isActionHandled && action.type !== 'CONSTRUCT') {
+            console.warn('Unhandled action "' + action.type + '".', action);
         }
 
         return newState;
