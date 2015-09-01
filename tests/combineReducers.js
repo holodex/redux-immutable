@@ -50,14 +50,14 @@ describe(`combineReducers`, () => {
             state = Immutable.Map({});
 
             action = {
-                name: `UNKNOWN`
+                type: `UNKNOWN`
             };
 
             reducer(state, action);
 
             expect(spy.calledWith(`Unhandled action "UNKNOWN".`)).to.equal(true);
         });
-        context(`when action.name is 'CONSTRUCT'`, () => {
+        context(`when action.type is 'CONSTRUCT'`, () => {
             it(`does not procuce console.warn message`, () => {
                 let action,
                     reducer,
@@ -74,7 +74,7 @@ describe(`combineReducers`, () => {
                 state = Immutable.Map({});
 
                 action = {
-                    name: `CONSTRUCT`
+                    type: `CONSTRUCT`
                 };
 
                 reducer(state, action);
@@ -133,7 +133,7 @@ describe(`combineReducers`, () => {
             state = Immutable.Map({});
 
             action = {
-                name: `FOO`
+                type: `FOO`
             };
 
             // @todo Should name the full domain namespace, e.g. foo.bar.baz.
@@ -163,7 +163,7 @@ describe(`combineReducers`, () => {
                 }
             });
 
-            state = reducer(state, {name: `FOO`});
+            state = reducer(state, {type: `FOO`});
 
             expect(state.get(`foos`).get(`bar`)).to.equal(2);
         });
@@ -186,7 +186,7 @@ describe(`combineReducers`, () => {
                 }
             });
 
-            reducer(state, {name: `FOO`});
+            reducer(state, {type: `FOO`});
 
             expect(state.get(`foos`).get(`bar`)).to.equal(1);
         });

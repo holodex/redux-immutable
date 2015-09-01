@@ -32,7 +32,7 @@ isActionMap = (map) => {
 /**
  * @param {Object} domain
  * @param {Object} action
- * @param {String} action.name
+ * @param {String} action.type
  * @param {Object} collection
  * @param {Object} tapper
  * @return {Object}
@@ -51,17 +51,17 @@ iterator = (domain, action, collection, tapper) => {
         // console.log(`value`, value, `domain`, domainName, `isActionMap`, isActionMap(value), `isDomainMap`, isDomainMap(value));
 
         if (isActionMap(value)) {
-            // console.log(`action.name`, action.name, `value[action.name]`, typeof value[action.name]);
+            // console.log(`action.type`, action.type, `value[action.type]`, typeof value[action.type]);
 
-            if (value[action.name]) {
+            if (value[action.type]) {
                 let result;
 
                 tapper.isActionHandled = true;
 
-                result = value[action.name](newDomain.get(domainName), action);
+                result = value[action.type](newDomain.get(domainName), action);
 
                 if (!Immutable.Iterable.isIterable(result)) {
-                    throw new Error(`Reducer must return an instance of Immutable.Iterable. "${domainName}" domain "${action.name}" action handler result is "${typeof result}".`);
+                    throw new Error(`Reducer must return an instance of Immutable.Iterable. "${domainName}" domain "${action.type}" action handler result is "${typeof result}".`);
                 }
 
                 newDomain = newDomain.set(domainName, result);
@@ -110,8 +110,8 @@ export default (reducer) => {
 
         newState = iterator(state, action, reducer, tapper);
 
-        if (!tapper.isActionHandled && action.name !== `CONSTRUCT`) {
-            console.warn(`Unhandled action "${action.name}".`, action);
+        if (!tapper.isActionHandled && action.type !== `CONSTRUCT`) {
+            console.warn(`Unhandled action "${action.type}".`, action);
         }
 
         return newState;
